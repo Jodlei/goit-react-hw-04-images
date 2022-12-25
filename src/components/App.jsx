@@ -19,39 +19,31 @@ export const App = () => {
   const [modalImageIdx, setModalImageIdx] = useState(null);
 
   useEffect(() => {
-    const updateState = resp => {
-      const { totalHits, hits } = resp.data;
-      const requiredData = hits.map(
-        ({ id, webformatURL, largeImageURL, tags }) => {
-          return { id, webformatURL, largeImageURL, tags };
-        }
-      );
-
-      if (hits.length === 0) {
-        setStatus('idle');
-        toast('По вашому запиту не знайдено жодного зображення');
-        return;
-      }
-
-      if (images.length + 12 >= totalHits) {
-        setImages(prevImages => {
-          return [...prevImages, ...requiredData];
-        });
-        setStatus('idle');
-        toast('Більше немає зображень по вашому запиту');
-        return;
-      }
-
-      setImages(prevImages => {
-        return [...prevImages, ...requiredData];
-      });
-      setStatus('resolved');
-    };
     if (query) {
       setStatus('loading');
       getDataFromApi(query, page).then(response => updateState(response));
     }
   }, [query, page]);
+  const updateState = resp => {
+    const { totalHits, hits } = resp.data;
+    const normData = hits.map(({ id, webformatURL, largeImageURL, tags }) => {
+      return { id, webformatURL, largeImageURL, tags };
+    });
+    if (hits.length === 0) {
+      setStatus('idle');
+      toast('По вашому запиту не знайдено жодного зображення');
+      return;
+    }
+    // if (images.length + 12 >= totalHits) {
+    //   setStatus('idle');
+    //   toast('Більше немає зображень по вашому запиту');
+    //   return;
+    // }
+    setImages(prevImages => {
+      return [...prevImages, ...normData];
+    });
+    setStatus('resolved');
+  };
 
   const handleFormSubmit = imageName => {
     setQuery(imageName);

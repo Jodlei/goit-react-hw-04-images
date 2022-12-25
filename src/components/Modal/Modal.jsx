@@ -8,17 +8,17 @@ const modalRoot = document.querySelector('#image-modal-root');
 
 export const Modal = ({ toggleModal, children }) => {
   useEffect(() => {
-    const closeModal = e => {
-      if (e.code === 'Escape') {
-        toggleModal();
-      }
-    };
-
     window.addEventListener('keydown', closeModal);
     return () => {
       window.removeEventListener('keydown', closeModal);
     };
-  }, []);
+  });
+
+  const closeModal = e => {
+    if (e.code === 'Escape') {
+      toggleModal();
+    }
+  };
 
   const onBackdropClick = e => {
     if (e.target === e.currentTarget) {
