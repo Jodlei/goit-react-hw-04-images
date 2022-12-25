@@ -25,7 +25,7 @@ export const App = () => {
     }
   }, [query, page]);
   const updateState = resp => {
-    const { totalHits, hits } = resp.data;
+    const { hits } = resp.data;
     const normData = hits.map(({ id, webformatURL, largeImageURL, tags }) => {
       return { id, webformatURL, largeImageURL, tags };
     });
