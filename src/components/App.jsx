@@ -24,21 +24,24 @@ export const App = () => {
       getDataFromApi(query, page).then(response => updateState(response));
     }
   }, [query, page]);
-  const updateState = resp => {
-    const { hits } = resp.data;
+
+  const updateState = response => {
+    const { hits } = response.data;
     const normData = hits.map(({ id, webformatURL, largeImageURL, tags }) => {
       return { id, webformatURL, largeImageURL, tags };
     });
+
     if (hits.length === 0) {
       setStatus('idle');
       toast('По вашому запиту не знайдено жодного зображення');
       return;
     }
-    // if (images.length + 12 >= totalHits) {
-    //   setStatus('idle');
-    //   toast('Більше немає зображень по вашому запиту');
-    //   return;
-    // }
+    if (hits.length < 12) {
+      setStatus('idle');
+      toast('Більше немає зображень по вашому запиту');
+      return;
+    }
+
     setImages(prevImages => {
       return [...prevImages, ...normData];
     });
@@ -46,6 +49,9 @@ export const App = () => {
   };
 
   const handleFormSubmit = imageName => {
+    if (imageName === query) {
+      return;
+    }
     setQuery(imageName);
     setPage(1);
     setImages([]);
